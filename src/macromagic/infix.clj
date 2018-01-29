@@ -17,33 +17,17 @@
   (apply min (filter #(> % -1) (map #(.indexOf ls %) operands))))
 
 (defn wrap [ls index]
-  (println (str "folding element " index))
   (let [pre (take (dec index) ls) post (drop (+ index 2) ls)]
-    (println pre)
-    (println post)
-    (println (list
-      (nth ls index)
-      (nth ls (dec index))
-      (nth ls (inc index))
-      ))
-    (println (concat pre (cons  
-      (list
-        (nth ls index)
-        (nth ls (dec index))
-        (nth ls (inc index))
-        ) post)))
-    (concat pre (cons  
-      (list
-        (nth ls index)
-        (nth ls (dec index))
-        (nth ls (inc index))
-        ) post))))
+    (concat 
+      pre 
+      (cons  
+        `(infix 
+          ~(drop (dec index) (take (+ index 2) ls))) 
+        post))))
 
 
 (defmacro superinfix 
   [ls]
-  (println "superinfix")
-  (println ls)
   (if (contains-operands '(* /) ls)
     (let [opindex (earliest-operand '(* /) ls)]
       `(superinfix ~(wrap ls opindex)))
